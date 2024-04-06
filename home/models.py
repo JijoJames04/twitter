@@ -11,3 +11,4 @@ class Post(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     author = models.ForeignKey("auth.User", on_delete=models.CASCADE, related_name='posts')
     image = models.ImageField(upload_to='posts', null=True, blank=True)
+    sentiment = models.FloatField(default=0.0)

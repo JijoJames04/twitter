@@ -38,6 +38,15 @@
                             <div class="post card p-3 m-3">
                                 <h5 class="card-title">@{{ post.author.username }}</h5>
                                 <p class="card-text">{{ post.created_at }}</p>
+                                <p class="card-text">Sentiment - 
+                                    {% if post.sentiment > 0 %}
+                                        <span class="text-success">
+                                            {% widthratio post.sentiment 1 100|floatformat:0 %}% Positive</span>
+                                    {% else %}
+                                        <span class="text-danger">
+                                            {% widthratio post.sentiment 1 -100|floatformat:0 %}% Negative</span>
+                                    {% endif %}
+                                </p>
                                 <hr>
                                 <p>{{ post.content }}</p>
                                 {% if post.image %}
