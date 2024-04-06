@@ -1,6 +1,8 @@
-# Guider
+# Connect
 
 ## Installation
+
+Docker is required to run this project. If you don't have docker installed, you can download it from [here](https://www.docker.com/products/docker-desktop)
 
 ### Steps
 
@@ -32,16 +34,16 @@
     ```bash
    python manage.py migrate
    ```
-7) Enable sign in with Google ( Optional )
+7) Enable sign in with Google
     ```bash
     python manage.py createsocial
     ```
-8) Create an admin user account
+8) Create an admin user account ( Optional )
     ```bash
    python manage.py createsuperuser
    ```
    
-That's it, now you should be able to start Guider by running,
+That's it, now you should be able to start Connect by running,
 ```bash
 python manage.py runserver
 ```
