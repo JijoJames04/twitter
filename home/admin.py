@@ -1,5 +1,6 @@
 from django.contrib import admin
 
-from home.models import Profile
+from home.models import Profile, Post
 
 admin.site.register(Profile)
+admin.site.register(Post)

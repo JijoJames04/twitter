@@ -1,3 +1,10 @@
+body, html {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
 #google_translate_element {
     top: unset;
     left: 10px;
@@ -9,8 +16,36 @@ input[type=file]::file-selector-button {
 }
 
 .bottom-pane {
-    position: fixed;
-    bottom: 10px;
-    left: calc(50% - 150px);
-    width: max(50%, 300px);
+    background-color: floralwhite;
+}
+
+.post img {
+    max-height: 300px;
+    width: 100%;
+    object-fit: cover;
+}
+
+.full-height {
+    height: calc(100vh - 290px);
+    overflow-y: auto;
+}
+
+/* width */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #888;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
 }

@@ -30,35 +30,44 @@
             </div>
 
             <!-- Feed Section -->
-            <div class="col-md-9">
-                <div class="feed h-75">
-                    {% for post in posts %}
-                        <div class="post">
-                            <h5>{{ post.title }}</h5>
-                            <p>{{ post.content }}</p>
-                            <img src="{{ post.image_url }}" alt="Post Image" style="width:100%;">
+            <div class="col-md-9 row">
+                <div class="col-3"></div>
+                <div class="feed col-6">
+                    <div class="full-height">
+                        {% for post in posts %}
+                            <div class="post card p-3 m-3">
+                                <h5 class="card-title">@{{ post.author.username }}</h5>
+                                <p class="card-text">{{ post.created_at }}</p>
+                                <hr>
+                                <p>{{ post.content }}</p>
+                                {% if post.image %}
+                                    <img src="{{ post.image.url }}" alt="Post Image">
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <form method="post" enctype="multipart/form-data" action="{% url 'create_post' %}"
+                          class="border-1 p-3 border-dark-subtle rounded-1 row bottom-pane m-3">
+                        {% csrf_token %}
+                        <div class="col-10">
+                            <div class="form-group">
+                                <label for="message">Message:</label>
+                                <textarea class="form-control" id="message" name="message" required></textarea>
+                            </div>
+                            <div class="form-group mt-2">
+                                <label for="image" class="text-bold btn btn-outline-secondary">Upload Image</label>
+                                <input type="file" id="image" name="image">
+                            </div>
                         </div>
-                    {% endfor %}
+                        <div class="col-2 d-flex justify-content-center align-items-center">
+                            <button type="submit" class="btn btn-primary">Post</button>
+                        </div>
+                    </form>
                 </div>
+                <div class="col-3"></div>
             </div>
         </div>
     </div>
-    <form method="post" enctype="multipart/form-data" class="border-1 p-3 border-dark-subtle rounded-1 row bottom-pane">
-        {% csrf_token %}
-        <div class="col-10">
-            <div class="form-group">
-                <label for="message">Message:</label>
-                <textarea class="form-control" id="message" name="message"></textarea>
-            </div>
-            <div class="form-group mt-2">
-                <label for="image" class="text-bold btn btn-outline-secondary">Upload Image</label>
-                <input type="file" id="image" name="image">
-            </div>
-        </div>
-        <div class="col-2 d-flex justify-content-center align-items-center">
-            <button type="submit" class="btn btn-primary">Post</button>
-        </div>
-    </form>
 {% endblock content %}
 
 {% block footer %}
