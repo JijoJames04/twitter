@@ -4,3 +4,4 @@
 media/
 registration_data.json
 db/
+**/*.pyc

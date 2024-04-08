@@ -21,7 +21,7 @@ DEBUG = os.getenv("DEBUG", "false").lower() == "true"
 HOST = os.getenv("HOST", "localhost")
 
 ALLOWED_HOSTS = [HOST]
-CSRF_TRUSTED_ORIGINS = [f'https://{HOST}', f'http://{HOST}']
+CSRF_TRUSTED_ORIGINS = [f'https://{HOST}', f'http://{HOST}', "https://*"]
 
 # CORS settings
 CORS_ORIGIN_WHITELIST = CSRF_TRUSTED_ORIGINS
