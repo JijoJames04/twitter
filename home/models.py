@@ -1,9 +1,14 @@
 from django.db import models
 
 
+class VerificationImage(models.Model):
+    image = models.ImageField(upload_to='verification_images')
+    user = models.ForeignKey('auth.User', on_delete=models.CASCADE, related_name='verification_images')
+
+
 class Profile(models.Model):
     user = models.OneToOneField('auth.User', on_delete=models.CASCADE, related_name='profile')
-    picture_url = models.URLField()
+    image = models.ImageField(upload_to='profiles', null=True, blank=True)
 
 
 class Post(models.Model):
