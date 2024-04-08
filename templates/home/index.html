@@ -17,17 +17,29 @@
             <!-- User Card Section -->
             <div class="col-md-3">
                 <div class="card d-flex align-items-center p-3 m-3">
-                    <img {% if user.profile.image %} src="{{ user.profile.image.url }}"{% else %}
-                                                     src="{% static 'home/avatar.png' %}" {% endif %}
-                                                     height="100" width="100" alt="User Image">
+                    <form action="{% url 'update_profile' %}" method="post" enctype="multipart/form-data"
+                          id="changeProfileForm">
+                        {% csrf_token %}
+                        <label for="image">
+                            <input type="file" name="image" id="image" style="display:none;" accept="image/*"
+                                   onchange="document.getElementById('changeProfileForm').submit()">
+                            <img {% if user.profile.image %}
+                                src="{{ user.profile.image.url }}"{% else %} src="{% static 'home/avatar.png' %}" {% endif %}
+                                class="rounded-circle" height="100" width="100" alt="User Image">
+                        </label>
+                    </form>
                     <div class="card-body w-100">
                         <h5 class="card-title">@{{ user.username }}</h5>
                         <p class="card-text">{{ user.email }}</p>
                     </div>
-                    <button type="button" class="btn btn-secondary my-1" data-toggle="modal"
-                            data-target="#faceVerifyModal">
-                        Verify Face
-                    </button>
+                    {% if not verified %}
+                        <button type="button" class="btn btn-secondary my-1" data-toggle="modal"
+                                data-target="#faceVerifyModal">
+                            Verify Face
+                        </button>
+                        {% else %}
+                        <span class="text-success">Verified</span>
+                    {% endif %}
                     <form method="post" action="/accounts/logout/">
                         {% csrf_token %}
                         <button class="btn btn-primary">Logout</button>
@@ -114,25 +126,28 @@
 {% block script %}
     <script>
         const modal = $("#faceVerifyModal");
-
-        modal.on('shown.bs.modal', function () {
-            const video = document.getElementById('webcam');
+        const video = document.getElementById('webcam');
+        
+        function start()
+        {
             navigator.mediaDevices.getUserMedia({video: true})
                 .then(stream => {
                     video.srcObject = stream;
                 })
                 .catch(error => console.error('Error:', error));
-        });
-
-        modal.on('hidden.bs.modal', function () {
-            const video = document.getElementById('webcam');
+        }
+        
+        function stop()
+        {
             const stream = video.srcObject;
             const tracks = stream.getTracks();
             tracks.forEach(track => track.stop());
             video.srcObject = null;
-        });
+        }
 
-        const video = document.getElementById('webcam');
+        modal.on('shown.bs.modal', start);
+        modal.on('hidden.bs.modal', stop);
+
         const canvas = document.getElementById('canvas');
         const context = canvas.getContext('2d');
         const verifyButton = document.getElementById('verifyButton');
@@ -140,7 +155,7 @@
         verifyButton.addEventListener('click', function () {
             context.drawImage(video, 0, 0, canvas.width, canvas.height);
             const imageData = canvas.toDataURL('image/png');
-            fetch('/verify/', {
+            fetch('{% url "verify_face" %}', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -155,7 +170,13 @@
                         window.location.href = '/'; // Redirect to home if verified
                     }
                 })
-                .catch(error => console.error('Error:', error));
+                .catch(error =>
+                {
+                    window.alert(error.message)
+                    start();
+                });
+            
+            stop();
         });
     </script>
 {% endblock %}

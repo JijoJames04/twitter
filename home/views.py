@@ -8,13 +8,14 @@ from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from textblob import TextBlob
 
-from home.models import Post, VerificationImage
+from home.models import Post, VerificationImage, Profile
 
 
 @login_required
 def index(request):
     posts = Post.objects.all()
-    return render(request, 'home/index.html', context={"posts": posts})
+    verified = request.session.get('verified', False)
+    return render(request, 'home/index.html', context={"posts": posts, "verified": verified})
 
 
 @login_required
@@ -64,6 +65,16 @@ def verify_face(request):
                 return JsonResponse({'message': 'Verification failed.'}, status=401)
 
         except Exception as e:
-            return JsonResponse({'error': str(e)}, status=500)
+            return JsonResponse({'message': str(e)}, status=500)
 
     return JsonResponse({'message': 'Invalid request'}, status=400)
+
+
+def update_profile(request):
+    if request.method == 'POST':
+        image = request.FILES.get('image')
+        profile = Profile.objects.get_or_create(user=request.user)[0]
+        profile.image = image
+        profile.save()
+
+    return redirect('home', permanent=True)
