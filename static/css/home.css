@@ -49,3 +49,11 @@ input[type=file]::file-selector-button {
 ::-webkit-scrollbar-thumb:hover {
     background: #555;
 }
+
+.tick-badge{
+    background-color: #4CAF50;
+    color: white;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 10px;
+}

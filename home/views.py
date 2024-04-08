@@ -8,6 +8,7 @@ from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from textblob import TextBlob
 
+from guider.utils import MoonDream, Bart
 from home.models import Post, VerificationImage, Profile
 
 
@@ -23,12 +24,23 @@ def create_post(request):
     if request.method == 'POST':
         content = request.POST.get('message')
         image = request.FILES.get('image')
+        verified = request.session.get('verified', False)
 
         if not content:
             return redirect('home', permanent=True)
 
         blob = TextBlob(content)
-        Post.objects.create(content=content, author=request.user, image=image, sentiment=blob.sentiment.polarity)
+        post = Post.objects.create(
+            content=content,
+            author=request.user,
+            image=image,
+            sentiment=blob.sentiment.polarity,
+            verified=verified
+        )
+
+        if post.image:
+            post.caption = MoonDream().generate(post.image.path)
+            post.save()
 
     return redirect('home', permanent=True)
 
@@ -70,6 +82,7 @@ def verify_face(request):
     return JsonResponse({'message': 'Invalid request'}, status=400)
 
 
+@login_required
 def update_profile(request):
     if request.method == 'POST':
         image = request.FILES.get('image')
@@ -78,3 +91,15 @@ def update_profile(request):
         profile.save()
 
     return redirect('home', permanent=True)
+
+
+def summary(request):
+    posts = Post.objects.all()
+    post_texts = ""
+
+    for post in posts:
+        post_texts += f"@{post.author.username} posted:\n{post.content}\n"
+
+    summary_text = Bart().generate_summary(post_texts)
+
+    return render(request, 'home/summary.html', context={"summary": summary_text})

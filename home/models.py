@@ -17,3 +17,9 @@ class Post(models.Model):
     author = models.ForeignKey("auth.User", on_delete=models.CASCADE, related_name='posts')
     image = models.ImageField(upload_to='posts', null=True, blank=True)
     sentiment = models.FloatField(default=0.0)
+    verified = models.BooleanField(default=False)
+    caption = models.TextField(null=True, blank=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
